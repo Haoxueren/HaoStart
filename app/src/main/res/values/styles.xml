@@ -3,6 +3,13 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:statusBarColor">#0088CC</item>
+        <item name="android:windowBackground">@mipmap/background</item>
     </style>
+
+    <style name="TextInputLayout">
+        <item name="android:textColor">@android:color/holo_green_dark</item>
+        <item name="android:textColorHint">@android:color/holo_green_dark</item>
+    </style>
+
 
 </resources>

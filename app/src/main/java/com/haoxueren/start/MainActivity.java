@@ -20,6 +20,10 @@ import android.widget.Toast;
 import com.haoxueren.start.base.BaseActivity;
 import com.haoxueren.start.bean.HaoApp;
 import com.haoxueren.start.bean.HaoAppDao;
+import com.haoxueren.start.helper.HaoHelper;
+
+import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
 
@@ -67,9 +71,13 @@ public class MainActivity extends BaseActivity {
                         textInputLayout.setError("请输入应用名称");
                         return true;
                     }
-                    List<HaoApp> list = dao.queryBuilder()
-                            .where(HaoAppDao.Properties.AppName.like(String.format("%%%s%%", appName)))
-                            .orderDesc(HaoAppDao.Properties.AppName).list();
+                    WhereCondition condition1 = HaoAppDao.Properties.AppName.like(String.format("%%%s%%", appName));
+                    WhereCondition condition2 = HaoAppDao.Properties.FirstLetter.like(String.format("%%%s%%", appName));
+                    WhereCondition condition3 = HaoAppDao.Properties.PackageName.like(String.format("%%%s%%", appName));
+                    QueryBuilder<HaoApp> queryBuilder = dao.queryBuilder();
+                    WhereCondition whereOrCondition = queryBuilder.or(condition1, condition2, condition3);
+                    List<HaoApp> list = queryBuilder.where(whereOrCondition)
+                            .orderAsc(HaoAppDao.Properties.AppName).list();
                     if (list.isEmpty()) {
                         textInputLayout.setError("未查询到符合条件的应用");
                     } else {
@@ -85,6 +93,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         loadAppFromSQLite();
+        System.out.println(HaoHelper.getFirstLetter("我是个Android工程师"));
     }
 
 
@@ -109,7 +118,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void subscribe(@NonNull ObservableEmitter<List<HaoApp>> emitter) throws Exception {
                 List<HaoApp> list = dao.queryBuilder().
-                        orderAsc(HaoAppDao.Properties.AppName).list();
+                        orderDesc(HaoAppDao.Properties.AppName).list();
                 emitter.onNext(list);
                 emitter.onComplete();
             }

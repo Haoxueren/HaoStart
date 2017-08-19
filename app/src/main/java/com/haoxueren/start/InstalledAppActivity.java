@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.haoxueren.start.base.BaseActivity;
 import com.haoxueren.start.bean.HaoApp;
 import com.haoxueren.start.bean.HaoAppDao;
+import com.haoxueren.start.helper.HaoHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,6 +117,8 @@ public class InstalledAppActivity extends BaseActivity {
             // 封装对象；
             HaoApp haoApp = new HaoApp();
             haoApp.setAppName(appName);
+            String firstLetter = HaoHelper.getFirstLetter(appName);
+            haoApp.setFirstLetter(firstLetter);
             haoApp.setAppIcon(appIcon);
             haoApp.setPackageName(packageName);
             list.add(haoApp);

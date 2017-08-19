@@ -19,15 +19,18 @@ public class HaoApp {
 
     private String appName;
 
+    private String firstLetter;// appName首字母缩写
+
     @Transient
     private Drawable appIcon;
 
     private String packageName;
 
-    @Generated(hash = 315055191)
-    public HaoApp(Long id, String appName, String packageName) {
+    @Generated(hash = 2055043106)
+    public HaoApp(Long id, String appName, String firstLetter, String packageName) {
         this.id = id;
         this.appName = appName;
+        this.firstLetter = firstLetter;
         this.packageName = packageName;
     }
 
@@ -65,5 +68,13 @@ public class HaoApp {
 
     public void setAppIcon(Drawable appIcon) {
         this.appIcon = appIcon;
+    }
+
+    public String getFirstLetter() {
+        return this.firstLetter;
+    }
+
+    public void setFirstLetter(String firstLetter) {
+        this.firstLetter = firstLetter;
     }
 }

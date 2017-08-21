@@ -6,16 +6,15 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ProgressBar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.haoxueren.start.base.BaseActivity;
 import com.haoxueren.start.bean.HaoApp;
 import com.haoxueren.start.bean.HaoAppDao;
-import com.haoxueren.start.helper.HaoHelper;
+import com.haoxueren.start.common.HaoHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +74,7 @@ public class InstalledAppActivity extends BaseActivity {
                                 // 保存APP数据到SQLite
                                 HaoAppDao haoAppDao = application.getDaoSession().getHaoAppDao();
                                 HaoApp haoApp = list.get(position);
-                                long insert = haoAppDao.insert(haoApp);
+                                long insert = haoAppDao.insertOrReplace(haoApp);
                                 InstalledAppActivity.this.finish();
                             }
 
@@ -126,4 +125,12 @@ public class InstalledAppActivity extends BaseActivity {
         return list;
     }
 
+    // onClick：导入全部应用
+    public void onImportClick(View view) {
+        HaoAppDao haoAppDao = application.getDaoSession().getHaoAppDao();
+        HaoAppAdapter adapter = (HaoAppAdapter) recyclerView.getAdapter();
+        List<HaoApp> list = adapter.getList();
+        haoAppDao.insertOrReplaceInTx(list);
+        Toast.makeText(this, "全部应用已导入", Toast.LENGTH_SHORT).show();
+    }
 }

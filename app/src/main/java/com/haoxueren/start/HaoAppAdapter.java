@@ -43,6 +43,10 @@ public class HaoAppAdapter extends RecyclerView.Adapter<HaoAppAdapter.HaoAppView
         void onItemLongClick(int position);
     }
 
+    public List<HaoApp> getList() {
+        return list;
+    }
+
     /**
      * ViewHolder
      */

@@ -8,6 +8,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * APP信息：名称、包名、图标；
@@ -24,6 +25,7 @@ public class HaoApp {
     @Transient
     private Drawable appIcon;
 
+    @Unique
     private String packageName;
 
     @Generated(hash = 2055043106)

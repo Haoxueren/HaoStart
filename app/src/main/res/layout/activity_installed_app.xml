@@ -14,7 +14,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="HardcodedText,RtlHardcoded,RtlSymmetry">
 
         <TextView
             android:id="@+id/titleTextView"
@@ -23,9 +24,21 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
-            android:text="InstalledApp"
+            android:text="已安装应用"
             android:textColor="#ffffff"
             android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:onClick="onImportClick"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="全部导入"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
             android:textStyle="bold"/>
 
     </LinearLayout>

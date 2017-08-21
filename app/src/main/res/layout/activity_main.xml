@@ -3,13 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:ignore="HardcodedText">
+    tools:ignore="HardcodedText,RtlSymmetry">
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -24,7 +23,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
-            android:text="HaoStart"
+            android:text="启动精灵"
             android:textColor="#ffffff"
             android:textSize="16sp"
             android:textStyle="bold"/>
@@ -73,6 +72,7 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
+            android:selectAllOnFocus="true"
             android:textSize="14sp"/>
     </android.support.design.widget.TextInputLayout>
 

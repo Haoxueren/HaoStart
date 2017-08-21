@@ -2,17 +2,18 @@ package com.haoxueren.start;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethod;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +21,8 @@ import android.widget.Toast;
 import com.haoxueren.start.base.BaseActivity;
 import com.haoxueren.start.bean.HaoApp;
 import com.haoxueren.start.bean.HaoAppDao;
-import com.haoxueren.start.helper.HaoHelper;
+import com.haoxueren.start.common.HaoHelper;
+import com.haoxueren.start.common.HaoTextWatcher;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.greenrobot.greendao.query.WhereCondition;
@@ -73,19 +75,17 @@ public class MainActivity extends BaseActivity {
                     }
                     WhereCondition condition1 = HaoAppDao.Properties.AppName.like(String.format("%%%s%%", appName));
                     WhereCondition condition2 = HaoAppDao.Properties.FirstLetter.like(String.format("%%%s%%", appName));
-                    WhereCondition condition3 = HaoAppDao.Properties.PackageName.like(String.format("%%%s%%", appName));
                     QueryBuilder<HaoApp> queryBuilder = dao.queryBuilder();
-                    WhereCondition whereOrCondition = queryBuilder.or(condition1, condition2, condition3);
+                    WhereCondition whereOrCondition = queryBuilder.or(condition1, condition2);
                     List<HaoApp> list = queryBuilder.where(whereOrCondition)
                             .orderAsc(HaoAppDao.Properties.AppName).list();
                     if (list.isEmpty()) {
-                        textInputLayout.setError("未查询到符合条件的应用");
+                        textInputLayout.setError("查询不到该应用");
                     } else {
                         v.setText(null);
                         launchApp(list.get(0).getPackageName());
                         // 隐藏软件键盘
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+                        HaoHelper.hiddenSoftKeyboard(textInputLayout);
                     }
                     return true;
                 }
@@ -93,7 +93,15 @@ public class MainActivity extends BaseActivity {
             }
         });
         loadAppFromSQLite();
-        System.out.println(HaoHelper.getFirstLetter("我是个Android工程师"));
+
+        appEditText.addTextChangedListener(new HaoTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (textInputLayout.isErrorEnabled()) {
+                    textInputLayout.setErrorEnabled(false);
+                }
+            }
+        });
     }
 
 
@@ -106,11 +114,14 @@ public class MainActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         appEditText.clearFocus();
+        textInputLayout.setErrorEnabled(false);
     }
 
+    // onClick
     public void onAddClick(View view) {
         Intent intent = new Intent(this, InstalledAppActivity.class);
         this.startActivity(intent);
+        HaoHelper.hiddenSoftKeyboard(view);
     }
 
     private void loadAppFromSQLite() {
@@ -118,7 +129,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void subscribe(@NonNull ObservableEmitter<List<HaoApp>> emitter) throws Exception {
                 List<HaoApp> list = dao.queryBuilder().
-                        orderDesc(HaoAppDao.Properties.AppName).list();
+                        orderAsc(HaoAppDao.Properties.AppName).list();
                 emitter.onNext(list);
                 emitter.onComplete();
             }
@@ -134,6 +145,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onItemClick(int position) {
                         // 启动APP
+                        HaoHelper.hiddenSoftKeyboard(recyclerView);
                         launchApp(haoApps.get(position).getPackageName());
                     }
 
@@ -164,7 +176,8 @@ public class MainActivity extends BaseActivity {
      */
     public boolean launchApp(String packageName) {
         Context context = getApplicationContext();
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = packageManager.getLaunchIntentForPackage(packageName);
         if (intent != null) {
             context.startActivity(intent);
         }
